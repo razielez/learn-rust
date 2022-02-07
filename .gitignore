@@ -38,3 +38,5 @@ Cargo.lock
 hs_err_pid*
 
 .vscode
+
+*.txt
