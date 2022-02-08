@@ -64,6 +64,54 @@ fn main() {
             panic!("Problem opening the file: {:?}", error);
         }
     });
+
+    // 宏
+    calculate! {
+        eval 1 + 2
+    }
+
+    // 模块路径
+    pub mod a {
+        fn foo(){println!("a");}
+        pub mod b {
+            pub mod c {
+                pub fn foo(){
+                    // is a func
+                    super::super::foo();
+                    //slef::super::super::foo();
+                }
+            }
+        }
+    }
+
+    a::b::c::foo();
+
+    // 方法调用
+    struct S;
+    impl S {
+        fn f() {println!("S");}
+    }
+
+    trait T1 {
+        fn f() {println!("T1 func");}
+    }
+
+    impl T1 for S {}
+
+    trait T2 {
+        fn f() {
+            println!("T2 func")
+        }
+    }
+    impl T2 for S {}
+    // 调用 inherent impl
+    S::f();
+    <S as T1>::f();
+    <S as T2>::f();
+
+    // 反省函数 turbofish 操作符
+    Iterator::collect::<Vec<i32>>((0..10));
+    
     
 }
 
@@ -137,4 +185,26 @@ fn value_in_cents(coin: Coin) -> u8 {
             25
         }
     }
+}
+
+// 泛型 看起来和 Java的类似
+// fn largest<T> (list: &[T]) -> T {
+//     let mut max = list[0];
+//     for &item in list {
+//         if item > max {
+//             max = item;
+//         }
+//     }
+//     max
+// }
+
+
+#[allow(unused)]
+// rust 2018
+#[macro_export]
+macro_rules! calculate {
+    (eval $e:expr) => {{
+        let val: usize = $e;
+        println!("{} = {}", stringify!{$e}, val)
+    }};
 }
